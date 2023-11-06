@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: final_project
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - nginx
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=JiraRush
+      - POSTGRES_DB=jira
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - /config/nginx.conf
