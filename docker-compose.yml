@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.7'
 
 services:
   app:
@@ -9,15 +9,19 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
       - nginx
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/jira
+      - SPRING_DATASOURCE_USERNAME=jira
+      - SPRING_DATASOURCE_PASSWORD=JiraRush
+      - SPRING_PROFILES_ACTIVE=prod
 
-  db:
+  postgres:
     image: postgres:latest
     environment:
       - POSTGRES_USER=jira
       - POSTGRES_PASSWORD=JiraRush
-      - POSTGRES_DB=jira
     ports:
       - "5432:5432"
 
@@ -25,5 +29,8 @@ services:
     image: nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - /config/nginx.conf
+      - ./config/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./resources:/usr/share/nginx/html
+    restart: always
