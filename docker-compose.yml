@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: final_project
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nginx
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/jira
+      - SPRING_DATASOURCE_USERNAME=jira
+      - SPRING_DATASOURCE_PASSWORD=JiraRush
+      - SPRING_PROFILES_ACTIVE=test
+
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=JiraRush
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx.conf:/usr/share/nginx/nginx.conf
+    restart: always
